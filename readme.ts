@@ -7,7 +7,7 @@
  * Possible improvements:
  * - add similar frontend for browsers
  * - add api docs
- * - use https://uithub.com/openapi to retrieve the tree instead of the github api (to bypass the ratelimit)
+ * - use https://uithub.com/openapi.html to retrieve the tree instead of the github api (to bypass the ratelimit)
  * - add monetisation using https://sponsorflare.com
  */
 export interface Env {
