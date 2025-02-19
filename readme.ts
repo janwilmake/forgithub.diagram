@@ -3,6 +3,7 @@
  *
  * - uses cloudflare workers with KV and a queue instead of a container-based server
  * - went from 14000 tokens of backend to ±5000 tokens (and fewer files)
+ * - /owner/repo/svg.svg retrieves the item as svg
  *
  * Possible improvements:
  * - add similar frontend for browsers
@@ -79,10 +80,16 @@ export default {
         }
 
         if (page === "svg.svg" && cachedResult.diagram) {
+          // https://github.com/alfonsusac/mermaid-ssr
           const url = new URL("https://mermaid-ssr.vercel.app/render");
           url.searchParams.set("code", cachedResult.diagram);
           const response = await fetch(url);
-          return response;
+          const result: { svg: string } = await response.json();
+          const svg = result.svg;
+
+          return new Response(svg, {
+            headers: { "content-type": "image/svg+xml" },
+          });
         }
 
         // If diagram exists, return it with 200 OK
