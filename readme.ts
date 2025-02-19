@@ -5,7 +5,10 @@
  * - went from 14000 tokens of backend to ±5000 tokens (and fewer files)
  *
  * Possible improvements:
- * - use uithubs api to retrieve the tree instead of the github api (to bypass the ratelimit)
+ * - add similar frontend for browsers
+ * - add api docs
+ * - use https://uithub.com/openapi to retrieve the tree instead of the github api (to bypass the ratelimit)
+ * - add monetisation using https://sponsorflare.com
  */
 export interface Env {
   // KV Namespace for storing diagrams
