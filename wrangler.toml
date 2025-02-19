@@ -4,32 +4,19 @@ compatibility_date = "2025-02-19"
 
 # KV for storing diagram results
 kv_namespaces = [
-  { binding = "DIAGRAMS_KV", id = "YOUR_KV_ID_HERE" }
+  { binding = "DIAGRAMS_KV", id = "0dbeed1b8fe142ddb8df68fb96240710" }
 ]
 
-# Queue for processing diagram generation
+route = {custom_domain = true, pattern = "diagram.forgithub.com" }
+
 [[queues.producers]]
 queue = "diagram-generation-queue"
 binding = "DIAGRAM_QUEUE"
 
-# Queue consumer worker
+
 [[queues.consumers]]
 queue = "diagram-generation-queue"
 max_batch_size = 1
 max_batch_timeout = 30
 max_retries = 3
 dead_letter_queue = "diagram-failed-jobs"
-
-# Environment variables
-[vars]
-# GITHUB_TOKEN and OPENAI_API_KEY should be set as secrets
-# wrangler secret put GITHUB_TOKEN
-# wrangler secret put OPENAI_API_KEY
-
-# Optional: configure custom domains
-# [triggers]
-# crons = ["0 0 * * *"] # Run cleanup job daily
-
-# Set limits for the worker
-[limits]
-cpu_ms = 50 # Higher CPU limit for diagram generation

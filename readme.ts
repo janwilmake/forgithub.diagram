@@ -3,7 +3,7 @@
  *
  * - uses cloudflare workers with KV and a queue instead of a container-based server
  * - uses uithub to retrieve the tree instead of the github api (to bypass the ratelimit)
- * - 2 files totaling 5000 tokens (from 15 files totaling 14000 tokens)
+ * - went from 14000 tokens of backend to ±5000 tokens (and fewer files)
  */
 export interface Env {
   // KV Namespace for storing diagrams
@@ -30,6 +30,7 @@ export interface DiagramData {
   error?: string;
   created?: string;
   generated?: string;
+  failed?: string;
 }
 
 export default {
@@ -55,7 +56,7 @@ export default {
 
     try {
       // Check if result exists in KV
-      const cachedResult = await env.DIAGRAMS_KV.get(cacheKey, {
+      const cachedResult = await env.DIAGRAMS_KV.get<DiagramData>(cacheKey, {
         type: "json",
       });
 
@@ -108,7 +109,7 @@ export default {
           headers: { "Content-Type": "application/json" },
         },
       );
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error processing request:", error);
       return new Response(
         JSON.stringify({
@@ -147,7 +148,7 @@ export default {
         );
 
         console.log(`Completed diagram for ${owner}/${repo}`);
-      } catch (error) {
+      } catch (error: any) {
         console.error(`Error processing message: ${error.message}`);
 
         // Store the error in KV
@@ -157,8 +158,8 @@ export default {
             JSON.stringify({
               status: "error",
               error: error.message,
-              timestamp: new Date().toISOString(),
-            }),
+              failed: new Date().toISOString(),
+            } satisfies DiagramData),
             {
               // Cache errors for 1 day
               expirationTtl: 60 * 60 * 24,
@@ -225,7 +226,8 @@ async function fetchRepositoryData(
     );
   }
 
-  const repoInfo = await repoInfoResponse.json();
+  const repoInfo: { default_branch: string | null } =
+    await repoInfoResponse.json();
   const defaultBranch = repoInfo.default_branch || "main";
 
   // Get file tree
@@ -243,7 +245,7 @@ async function fetchRepositoryData(
     throw new Error(`Failed to fetch file tree: ${treeResponse.status}`);
   }
 
-  const treeData = await treeResponse.json();
+  const treeData: { tree: { path: string }[] } = await treeResponse.json();
 
   // Filter out unwanted files (similar to the original service)
   const excludedPatterns = [
@@ -302,7 +304,7 @@ async function fetchRepositoryData(
     throw new Error(`Failed to fetch README: ${readmeResponse.status}`);
   }
 
-  const readmeData = await readmeResponse.json();
+  const readmeData: { download_url: string } = await readmeResponse.json();
   const readmeContentResponse = await fetch(readmeData.download_url);
   const readme = await readmeContentResponse.text();
 
@@ -547,6 +549,6 @@ async function callAI(
     throw new Error(`AI API error: ${response.status} ${error}`);
   }
 
-  const result = await response.json();
+  const result: any = await response.json();
   return result.choices[0].message.content;
 }

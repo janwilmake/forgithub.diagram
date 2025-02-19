@@ -1,0 +1,13 @@
+{
+  "include": ["readme.ts"],
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "nodenext",
+    "strict": true,
+    "moduleResolution": "nodenext",
+    "noEmit": true,
+    "skipLibCheck": true,
+    "types": ["@cloudflare/workers-types"],
+    "declaration": true
+  }
+}
