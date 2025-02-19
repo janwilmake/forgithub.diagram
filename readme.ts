@@ -155,10 +155,8 @@ export default {
         // Calculate age for caching purposes
 
         if (page === "image.png") {
-          const refreshPart = cacheParams.maxAge === 0 ? "&refresh=true" : "";
-
           const png = await fetch(
-            `https://quickog.com/screenshot/${url.origin}/${owner}/${repo}/image.html?id=diagram${refreshPart}`,
+            `https://quickog.com/screenshot/${url.origin}/${owner}/${repo}/image.html?id=diagram`,
           );
           return png;
         }
@@ -260,6 +258,11 @@ ${cachedResult.diagram}
         );
 
         console.log(`Completed diagram for ${owner}/${repo}`);
+
+        await fetch(
+          `https://quickog.com/screenshot/https://diagram.forgithub.com/${owner}/${repo}/image.html?id=diagram&refresh=true`,
+        );
+        console.log(`Completed fetching screenshot for ${owner}/${repo}`);
       } catch (error: any) {
         console.error(`Error processing message: ${error.message}`);
 
