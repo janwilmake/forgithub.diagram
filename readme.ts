@@ -80,7 +80,19 @@ export default {
           );
         }
 
-        if (page === "image.html" && cachedResult.diagram) {
+        if (!cachedResult.diagram) {
+          return new Response("Not found", { status: 404 });
+        }
+
+        if (page === "image.mmd") {
+          // If diagram exists, return it with 200 OK
+          return new Response(cachedResult.diagram, {
+            status: 200,
+            headers: { "Content-Type": "text/plain" },
+          });
+        }
+
+        if (page === "image.html" || !page) {
           return new Response(
             `<!doctype html>
 <html lang="en">
@@ -96,11 +108,11 @@ ${cachedResult.diagram}
             { headers: { "content-type": "text/html" } },
           );
         }
-        // If diagram exists, return it with 200 OK
-        return new Response(cachedResult.diagram, {
-          status: 200,
-          headers: { "Content-Type": "text/plain" },
-        });
+
+        return new Response(
+          "Page not allowed, try either 'image.html' or 'image.mmd'",
+          { status: 400 },
+        );
       }
 
       // If not in KV, set pending status and add to queue

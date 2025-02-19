@@ -48,10 +48,10 @@
     <header class="w-full border-b border-gray-300 bg-[#f1ebff] py-4">
         <div class="container mx-auto px-4 flex justify-between items-center">
             <a href="/" class="text-2xl font-bold logo-gradient">
-                Git<span class="text-purple-600">Diagram</span>
+                Diagram<span class="text-purple-600"> for GitHub</span>
             </a>
             <div class="flex items-center space-x-6">
-                <a href="/openapi" class="text-gray-800 hover:text-purple-600">API Key</a>
+                <a href="/openapi" class="text-gray-800 hover:text-purple-600">API Docs</a>
                 <a href="https://github.com/janwilmake/forgithub.diagram"
                     class="flex items-center text-gray-800 hover:text-purple-600">
                     <svg class="w-6 h-6 mr-1" viewBox="0 0 24 24" fill="currentColor">
@@ -165,7 +165,7 @@
             }
 
             // Redirect to the diagram page
-            window.location.href = `/${owner}/${repo}/html.html`;
+            window.location.href = `/${owner}/${repo}/image.html`;
         });
 
         // Example repository links
@@ -201,7 +201,7 @@
                         return;
                 }
 
-                window.location.href = `/${owner}/${repo}/html.html`;
+                window.location.href = `/${owner}/${repo}/image.html`;
             });
         });
     </script>
