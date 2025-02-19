@@ -168,7 +168,7 @@ export default {
           `<!doctype html>
 <html lang="en">
   <body>
-    <pre class="mermaid">
+    <pre id="diagram" class="mermaid">
 ${cachedResult.diagram}
     </pre>
     <script type="module">
@@ -186,14 +186,16 @@ ${cachedResult.diagram}
         );
       }
 
-      // If not in KV, set pending status and add to queue
-      await env.DIAGRAMS_KV.put(
-        cacheKey,
-        JSON.stringify({
-          status: "pending",
-          created: new Date().toISOString(),
-        }),
-      );
+      if (!cachedResult) {
+        // If not in KV, set pending status and add to queue
+        await env.DIAGRAMS_KV.put(
+          cacheKey,
+          JSON.stringify({
+            status: "pending",
+            created: new Date().toISOString(),
+          }),
+        );
+      }
 
       // Add job to queue
       await env.DIAGRAM_QUEUE.send({
@@ -245,10 +247,6 @@ ${cachedResult.diagram}
             diagram,
             generated: new Date().toISOString(),
           }),
-          {
-            // Cache for 7 days
-            expirationTtl: 60 * 60 * 24 * 7,
-          },
         );
 
         console.log(`Completed diagram for ${owner}/${repo}`);
