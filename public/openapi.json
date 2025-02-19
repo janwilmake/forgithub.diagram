@@ -1,0 +1,266 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "GitDiagram API",
+    "description": "API for generating Mermaid diagrams from GitHub repositories, deployed on Cloudflare Workers",
+    "version": "1.0.0",
+    "contact": {
+      "name": "GitDiagram Support"
+    },
+    "license": {
+      "name": "MIT"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://diagram.forgithub.com",
+      "description": "Production API"
+    }
+  ],
+  "paths": {
+    "/{owner}/{repo}/image.mmd": {
+      "get": {
+        "summary": "Generate a Mermaid diagram for a GitHub repository",
+        "description": "Generates a Mermaid diagram representing the architecture of a GitHub repository. If not available in cache, starts generation and returns a 202 status.",
+        "operationId": "generateDiagram",
+        "parameters": [
+          {
+            "name": "owner",
+            "in": "path",
+            "description": "GitHub repository owner",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "repo",
+            "in": "path",
+            "description": "GitHub repository name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Mermaid diagram text",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "graph TD\n  A[Frontend] --> B[API]\n  B --> C[(Database)]"
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "Diagram generation in progress",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PendingResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/{owner}/{repo}/image.html": {
+      "get": {
+        "summary": "Get HTML page rendering the Mermaid diagram",
+        "description": "Returns an HTML page that includes the Mermaid diagram and rendering script",
+        "operationId": "getDiagramHtml",
+        "parameters": [
+          {
+            "name": "owner",
+            "in": "path",
+            "description": "GitHub repository owner",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "repo",
+            "in": "path",
+            "description": "GitHub repository name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "HTML page with Mermaid diagram",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "Diagram generation in progress",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PendingResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "PendingResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["pending"],
+            "example": "pending"
+          },
+          "message": {
+            "type": "string",
+            "example": "Diagram generation in progress"
+          }
+        },
+        "required": ["status", "message"]
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "example": "Internal server error"
+          },
+          "message": {
+            "type": "string",
+            "example": "Failed to fetch repository data"
+          }
+        },
+        "required": ["error"]
+      },
+      "DiagramData": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["pending", "complete", "error"],
+            "example": "complete"
+          },
+          "diagram": {
+            "type": "string",
+            "example": "graph TD\n  A[Frontend] --> B[API]\n  B --> C[(Database)]"
+          },
+          "error": {
+            "type": "string",
+            "example": "Failed to generate diagram"
+          },
+          "created": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2023-01-01T12:00:00Z"
+          },
+          "generated": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2023-01-01T12:05:00Z"
+          },
+          "failed": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2023-01-01T12:05:00Z"
+          }
+        },
+        "required": ["status"]
+      },
+      "QueueMessage": {
+        "type": "object",
+        "properties": {
+          "owner": {
+            "type": "string",
+            "example": "octocat"
+          },
+          "repo": {
+            "type": "string",
+            "example": "hello-world"
+          },
+          "cacheKey": {
+            "type": "string",
+            "example": "diagram:octocat:hello-world"
+          }
+        },
+        "required": ["owner", "repo", "cacheKey"]
+      }
+    },
+    "securitySchemes": {
+      "GitHubToken": {
+        "type": "apiKey",
+        "name": "Authorization",
+        "in": "header",
+        "description": "GitHub Personal Access Token used for API requests (internal)"
+      },
+      "OpenAIKey": {
+        "type": "apiKey",
+        "name": "Authorization",
+        "in": "header",
+        "description": "OpenAI API Key used for generating diagrams (internal)"
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "diagrams",
+      "description": "Diagram generation endpoints"
+    }
+  ]
+}

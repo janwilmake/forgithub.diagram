@@ -3,11 +3,12 @@
  *
  * - uses cloudflare workers with KV and a queue instead of a container-based server
  * - went from 14000 tokens of backend to ±5000 tokens (and fewer files)
- * - /owner/repo/svg.svg retrieves the item as svg
+ * - /owner/repo/html.html renders it as HTML
+ *
  *
  * Possible improvements:
  * - add similar frontend for browsers
- * - add api docs
+ * - use cloudflare browser rendering to expose /owner/repo/image.svg as well as /owner/repo/image.png (do something similar to https://github.com/alfonsusac/mermaid-ssr)
  * - use https://uithub.com/openapi.html to retrieve the tree instead of the github api (to bypass the ratelimit)
  * - add monetisation using https://sponsorflare.com
  */
@@ -79,19 +80,22 @@ export default {
           );
         }
 
-        if (page === "svg.svg" && cachedResult.diagram) {
-          // https://github.com/alfonsusac/mermaid-ssr
-          const url = new URL("https://mermaid-ssr.vercel.app/render");
-          url.searchParams.set("code", cachedResult.diagram);
-          const response = await fetch(url);
-          const result: { svg: string } = await response.json();
-          const svg = result.svg;
-
-          return new Response(svg, {
-            headers: { "content-type": "image/svg+xml" },
-          });
+        if (page === "html.html" && cachedResult.diagram) {
+          return new Response(
+            `<!doctype html>
+<html lang="en">
+  <body>
+    <pre class="mermaid">
+${cachedResult.diagram}
+    </pre>
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+    </script>
+  </body>
+</html>`,
+            { headers: { "content-type": "text/html" } },
+          );
         }
-
         // If diagram exists, return it with 200 OK
         return new Response(cachedResult.diagram, {
           status: 200,

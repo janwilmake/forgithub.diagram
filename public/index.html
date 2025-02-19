@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagram for GitHub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        .float-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 1s ease-out forwards;
+        }
+
+        .delay-100 {
+            animation-delay: 0.1s;
+        }
+
+        .delay-200 {
+            animation-delay: 0.2s;
+        }
+
+        .delay-300 {
+            animation-delay: 0.3s;
+        }
+    </style>
+</head>
+
+<body class="bg-black min-h-screen flex flex-col items-center justify-center p-6 relative">
+    <main class="w-full max-w-4xl mx-auto text-center space-y-12">
+        <h1 class="float-animation">
+            <span
+                class="text-9xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-600">
+                Diagram
+            </span>
+            <span class="block text-2xl font-medium text-gray-400 mt-4">
+                for GitHub
+            </span>
+        </h1>
+
+        <p class="text-xl text-gray-300 max-w-2xl mx-auto fade-in">
+            Visualize your GitHub repositories with beautiful architecture diagrams
+        </p>
+
+        <div class="max-w-lg mx-auto fade-in delay-100 bg-gray-800/50 rounded-lg p-8 backdrop-blur">
+            <form id="repoForm" class="space-y-6">
+                <div class="space-y-2">
+                    <label for="repoUrl" class="block text-left text-lg font-medium text-gray-300">GitHub Repository
+                        URL</label>
+                    <input type="text" id="repoUrl" name="repoUrl" placeholder="https://github.com/owner/repository"
+                        class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none">
+                </div>
+                <button type="submit"
+                    class="w-full px-8 py-4 text-xl font-bold text-white bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg hover:from-blue-600 hover:to-cyan-600 transition-all duration-300 shadow-lg hover:shadow-xl">
+                    Generate Diagram
+                </button>
+            </form>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16 fade-in delay-200">
+            <div class="bg-gray-800 p-6 rounded-lg">
+                <div class="text-blue-400 text-4xl mb-4">📊</div>
+                <h3 class="text-xl font-bold text-white mb-2">Architecture Visualization</h3>
+                <p class="text-gray-300">Automatically generate diagrams that represent your repository's structure</p>
+            </div>
+            <div class="bg-gray-800 p-6 rounded-lg">
+                <div class="text-blue-400 text-4xl mb-4">🧠</div>
+                <h3 class="text-xl font-bold text-white mb-2">AI-Powered Analysis</h3>
+                <p class="text-gray-300">Uses advanced AI to understand your codebase and identify components</p>
+            </div>
+            <div class="bg-gray-800 p-6 rounded-lg">
+                <div class="text-blue-400 text-4xl mb-4">🔗</div>
+                <h3 class="text-xl font-bold text-white mb-2">Interactive Maps</h3>
+                <p class="text-gray-300">Click on components to explore relevant files and directories</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Floating X Button -->
+    <a href="https://x.com/janwilmake"
+        class="fixed bottom-6 right-6 p-3 bg-gray-800 hover:bg-gray-700 rounded-full transition-colors duration-300 shadow-lg hover:shadow-xl"
+        target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 24 24" class="w-6 h-6 text-white" fill="currentColor">
+            <path
+                d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+        </svg>
+    </a>
+
+    <script>
+        document.getElementById('repoForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            // Get the GitHub repository URL
+            const repoUrl = document.getElementById('repoUrl').value.trim();
+
+            // Basic validation
+            if (!repoUrl) {
+                alert('Please enter a GitHub repository URL');
+                return;
+            }
+
+            // Extract owner and repo from the URL
+            // Handles formats like:
+            // - https://github.com/owner/repo
+            // - github.com/owner/repo
+            // - owner/repo
+            let owner, repo;
+
+            if (repoUrl.includes('github.com')) {
+                const urlParts = repoUrl.split('github.com/')[1].split('/');
+                owner = urlParts[0];
+                repo = urlParts[1];
+            } else {
+                const urlParts = repoUrl.split('/');
+                owner = urlParts[0];
+                repo = urlParts[1];
+            }
+
+            // Validate owner and repo
+            if (!owner || !repo) {
+                alert('Invalid GitHub URL format. Please use: https://github.com/owner/repo');
+                return;
+            }
+
+            // Redirect to the diagram page
+            window.location.href = `/${owner}/${repo}/html.html`;
+        });
+    </script>
+</body>
+
+</html>

@@ -9,6 +9,8 @@ kv_namespaces = [
   { binding = "DIAGRAMS_KV", id = "0dbeed1b8fe142ddb8df68fb96240710" }
 ]
 
+assets.directory = "./public"
+
 route = {custom_domain = true, pattern = "diagram.forgithub.com" }
 
 [[queues.producers]]
