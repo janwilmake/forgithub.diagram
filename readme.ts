@@ -125,7 +125,13 @@ export default {
         type: "json",
       });
 
-      if (cachedResult) {
+      const generatedDate = cachedResult?.generated
+        ? new Date(cachedResult.generated).getTime()
+        : Date.now();
+
+      const age = Math.floor((Date.now() - generatedDate) / 1000);
+
+      if (cachedResult && cacheParams.maxAge >= age) {
         // If status is pending, return 202 Accepted
         if (cachedResult.status === "pending") {
           return new Response(
@@ -145,10 +151,6 @@ export default {
         }
 
         // Calculate age for caching purposes
-        const generatedDate = cachedResult.generated
-          ? new Date(cachedResult.generated).getTime()
-          : Date.now();
-        const age = Math.floor((Date.now() - generatedDate) / 1000);
 
         if (page === "image.mmd") {
           // If diagram exists, return it with 200 OK and cache headers
