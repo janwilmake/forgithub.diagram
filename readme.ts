@@ -2,8 +2,10 @@
  * This implementation implements an API based off https://github.com/ahmedkhaleel2004/gitdiagram/tree/main with a few notable changes
  *
  * - uses cloudflare workers with KV and a queue instead of a container-based server
- * - uses uithub to retrieve the tree instead of the github api (to bypass the ratelimit)
  * - went from 14000 tokens of backend to ±5000 tokens (and fewer files)
+ *
+ * Possible improvements:
+ * - use uithubs api to retrieve the tree instead of the github api (to bypass the ratelimit)
  */
 export interface Env {
   // KV Namespace for storing diagrams
