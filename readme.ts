@@ -3,11 +3,11 @@
  *
  * - uses cloudflare workers with KV and a queue instead of a container-based server
  * - went from 14000 tokens of backend to ±5000 tokens (and fewer files)
- * - /owner/repo/html.html renders it as HTML
+ * - /owner/repo/image.html renders it as HTML
+ * - added similar frontend for browsers
  *
  *
  * Possible improvements:
- * - add similar frontend for browsers
  * - use cloudflare browser rendering to expose /owner/repo/image.svg as well as /owner/repo/image.png (do something similar to https://github.com/alfonsusac/mermaid-ssr)
  * - use https://uithub.com/openapi.html to retrieve the tree instead of the github api (to bypass the ratelimit)
  * - add monetisation using https://sponsorflare.com
@@ -80,7 +80,7 @@ export default {
           );
         }
 
-        if (page === "html.html" && cachedResult.diagram) {
+        if (page === "image.html" && cachedResult.diagram) {
           return new Response(
             `<!doctype html>
 <html lang="en">

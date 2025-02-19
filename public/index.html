@@ -4,117 +4,130 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Diagram for GitHub</title>
+    <title>Diagram for GitHub - Visualize GitHub Repositories</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @keyframes float {
+        body {
+            background-color: #f1ebff;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        .shadow-custom {
+            box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.8);
+        }
+
+        .sparkle {
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
 
             0%,
             100% {
-                transform: translateY(0px);
+                opacity: 1;
+                transform: scale(1);
             }
 
             50% {
-                transform: translateY(-20px);
+                opacity: 0.7;
+                transform: scale(1.1);
             }
         }
 
-        .float-animation {
-            animation: float 6s ease-in-out infinite;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .fade-in {
-            animation: fadeIn 1s ease-out forwards;
-        }
-
-        .delay-100 {
-            animation-delay: 0.1s;
-        }
-
-        .delay-200 {
-            animation-delay: 0.2s;
-        }
-
-        .delay-300 {
-            animation-delay: 0.3s;
+        .logo-gradient {
+            background: linear-gradient(90deg, #000 0%, #8a2be2 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
     </style>
 </head>
 
-<body class="bg-black min-h-screen flex flex-col items-center justify-center p-6 relative">
-    <main class="w-full max-w-4xl mx-auto text-center space-y-12">
-        <h1 class="float-animation">
-            <span
-                class="text-9xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-600">
-                Diagram
-            </span>
-            <span class="block text-2xl font-medium text-gray-400 mt-4">
-                for GitHub
-            </span>
-        </h1>
+<body>
+    <!-- Header -->
+    <header class="w-full border-b border-gray-300 bg-[#f1ebff] py-4">
+        <div class="container mx-auto px-4 flex justify-between items-center">
+            <a href="/" class="text-2xl font-bold logo-gradient">
+                Git<span class="text-purple-600">Diagram</span>
+            </a>
+            <div class="flex items-center space-x-6">
+                <a href="/openapi" class="text-gray-800 hover:text-purple-600">API Key</a>
+                <a href="https://github.com/janwilmake/forgithub.diagram"
+                    class="flex items-center text-gray-800 hover:text-purple-600">
+                    <svg class="w-6 h-6 mr-1" viewBox="0 0 24 24" fill="currentColor">
+                        <path
+                            d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z" />
+                    </svg>
+                    GitHub
+                </a>
 
-        <p class="text-xl text-gray-300 max-w-2xl mx-auto fade-in">
-            Visualize your GitHub repositories with beautiful architecture diagrams
-        </p>
+            </div>
+        </div>
+    </header>
 
-        <div class="max-w-lg mx-auto fade-in delay-100 bg-gray-800/50 rounded-lg p-8 backdrop-blur">
-            <form id="repoForm" class="space-y-6">
-                <div class="space-y-2">
-                    <label for="repoUrl" class="block text-left text-lg font-medium text-gray-300">GitHub Repository
-                        URL</label>
-                    <input type="text" id="repoUrl" name="repoUrl" placeholder="https://github.com/owner/repository"
-                        class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none">
-                </div>
-                <button type="submit"
-                    class="w-full px-8 py-4 text-xl font-bold text-white bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg hover:from-blue-600 hover:to-cyan-600 transition-all duration-300 shadow-lg hover:shadow-xl">
-                    Generate Diagram
-                </button>
-            </form>
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-12 relative">
+        <!-- Sparkles -->
+        <div class="absolute top-20 left-[30%] sparkle">
+            <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M25 0L31.5 18.5L50 25L31.5 31.5L25 50L18.5 31.5L0 25L18.5 18.5L25 0Z" fill="#9333EA" />
+            </svg>
+        </div>
+        <div class="absolute bottom-20 right-[20%] sparkle">
+            <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M25 0L31.5 18.5L50 25L31.5 31.5L25 50L18.5 31.5L0 25L18.5 18.5L25 0Z" fill="#67E8F9" />
+            </svg>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16 fade-in delay-200">
-            <div class="bg-gray-800 p-6 rounded-lg">
-                <div class="text-blue-400 text-4xl mb-4">📊</div>
-                <h3 class="text-xl font-bold text-white mb-2">Architecture Visualization</h3>
-                <p class="text-gray-300">Automatically generate diagrams that represent your repository's structure</p>
-            </div>
-            <div class="bg-gray-800 p-6 rounded-lg">
-                <div class="text-blue-400 text-4xl mb-4">🧠</div>
-                <h3 class="text-xl font-bold text-white mb-2">AI-Powered Analysis</h3>
-                <p class="text-gray-300">Uses advanced AI to understand your codebase and identify components</p>
-            </div>
-            <div class="bg-gray-800 p-6 rounded-lg">
-                <div class="text-blue-400 text-4xl mb-4">🔗</div>
-                <h3 class="text-xl font-bold text-white mb-2">Interactive Maps</h3>
-                <p class="text-gray-300">Click on components to explore relevant files and directories</p>
+        <!-- Content -->
+        <div class="text-center max-w-3xl mx-auto">
+            <h1 class="text-6xl font-bold mb-12">
+                Repository to<br>diagram
+            </h1>
+
+            <p class="text-xl mb-2">Turn any GitHub repository into an interactive diagram for visualization.</p>
+            <p class="text-xl mb-6">This is useful for quickly visualizing projects.</p>
+            <p class="text-xl mb-12">You can also prepend 'diagram.for' to 'github.com' in any Github URL</p>
+
+            <!-- Form Box -->
+            <div class="bg-[#e9dcff] p-12 rounded-xl border-2 border-black shadow-custom mb-8 relative">
+                <form id="diagramForm" class="flex flex-col md:flex-row gap-4 mb-8">
+                    <input type="text" id="repoUrl" placeholder="https://github.com/username/repo"
+                        class="flex-grow py-3 px-4 rounded-lg border-2 border-black text-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                    <button type="submit"
+                        class="bg-purple-500 hover:bg-purple-600 text-white py-3 px-8 rounded-lg border-2 border-black text-lg font-semibold transition-all">
+                        Diagram
+                    </button>
+                </form>
+
+                <div class="text-left">
+                    <p class="mb-4 text-gray-700">Try these example repositories:</p>
+                    <div class="flex flex-wrap gap-3">
+                        <a href="#"
+                            class="example-repo bg-purple-300 hover:bg-purple-400 py-2 px-4 rounded-lg border-2 border-black">FastAPI</a>
+                        <a href="#"
+                            class="example-repo bg-purple-300 hover:bg-purple-400 py-2 px-4 rounded-lg border-2 border-black">Streamlit</a>
+                        <a href="#"
+                            class="example-repo bg-purple-300 hover:bg-purple-400 py-2 px-4 rounded-lg border-2 border-black">Flask</a>
+                        <a href="#"
+                            class="example-repo bg-purple-300 hover:bg-purple-400 py-2 px-4 rounded-lg border-2 border-black">api-analytics</a>
+                        <a href="#"
+                            class="example-repo bg-purple-300 hover:bg-purple-400 py-2 px-4 rounded-lg border-2 border-black">Monkeytype</a>
+                    </div>
+                </div>
+
+                <!-- Star decoration -->
+                <div class="absolute -bottom-14 -left-14">
+                    <svg width="70" height="70" viewBox="0 0 70 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M35 0L44.1 26.9L70 35L44.1 43.1L35 70L25.9 43.1L0 35L25.9 26.9L35 0Z" fill="#67C7ED" />
+                    </svg>
+                </div>
             </div>
         </div>
     </main>
 
-    <!-- Floating X Button -->
-    <a href="https://x.com/janwilmake"
-        class="fixed bottom-6 right-6 p-3 bg-gray-800 hover:bg-gray-700 rounded-full transition-colors duration-300 shadow-lg hover:shadow-xl"
-        target="_blank" rel="noopener noreferrer">
-        <svg viewBox="0 0 24 24" class="w-6 h-6 text-white" fill="currentColor">
-            <path
-                d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-        </svg>
-    </a>
-
     <script>
-        document.getElementById('repoForm').addEventListener('submit', function (e) {
+        document.getElementById('diagramForm').addEventListener('submit', function (e) {
             e.preventDefault();
 
             // Get the GitHub repository URL
@@ -127,30 +140,69 @@
             }
 
             // Extract owner and repo from the URL
-            // Handles formats like:
-            // - https://github.com/owner/repo
-            // - github.com/owner/repo
-            // - owner/repo
             let owner, repo;
 
-            if (repoUrl.includes('github.com')) {
-                const urlParts = repoUrl.split('github.com/')[1].split('/');
-                owner = urlParts[0];
-                repo = urlParts[1];
-            } else {
-                const urlParts = repoUrl.split('/');
-                owner = urlParts[0];
-                repo = urlParts[1];
-            }
+            try {
+                const url = new URL(repoUrl);
+                const pathParts = url.pathname.split('/').filter(Boolean);
 
-            // Validate owner and repo
-            if (!owner || !repo) {
-                alert('Invalid GitHub URL format. Please use: https://github.com/owner/repo');
-                return;
+                if (pathParts.length >= 2) {
+                    owner = pathParts[0];
+                    repo = pathParts[1];
+                } else {
+                    throw new Error('Invalid URL format');
+                }
+            } catch (error) {
+                // Handle case where user entered owner/repo format
+                const parts = repoUrl.split('/').filter(Boolean);
+                if (parts.length >= 2) {
+                    owner = parts[parts.length - 2];
+                    repo = parts[parts.length - 1];
+                } else {
+                    alert('Invalid GitHub URL format. Please use: https://github.com/owner/repo');
+                    return;
+                }
             }
 
             // Redirect to the diagram page
             window.location.href = `/${owner}/${repo}/html.html`;
+        });
+
+        // Example repository links
+        document.querySelectorAll('.example-repo').forEach(link => {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                const repoName = this.textContent;
+                let owner, repo;
+
+                switch (repoName) {
+                    case 'FastAPI':
+                        owner = 'tiangolo';
+                        repo = 'fastapi';
+                        break;
+                    case 'Streamlit':
+                        owner = 'streamlit';
+                        repo = 'streamlit';
+                        break;
+                    case 'Flask':
+                        owner = 'pallets';
+                        repo = 'flask';
+                        break;
+                    case 'api-analytics':
+                        owner = 'plausible';
+                        repo = 'analytics';
+                        break;
+                    case 'Monkeytype':
+                        owner = 'monkeytypegame';
+                        repo = 'monkeytype';
+                        break;
+                    default:
+                        return;
+                }
+
+                window.location.href = `/${owner}/${repo}/html.html`;
+            });
         });
     </script>
 </body>
