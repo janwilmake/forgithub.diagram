@@ -2,7 +2,7 @@
 This implementation implements an API and simple frontend based off https://github.com/ahmedkhaleel2004/gitdiagram/tree/main with a few notable changes
 
 - uses cloudflare workers with KV and a queue instead of a container-based server
-- went from ±11500 lines of code to ±16100 (>7x less complexity, showcasing the power of the frameworkless cloudflare worker stack!)
+- went from ±11500 lines of code to ±1600 (>7x less complexity, showcasing the power of the frameworkless cloudflare worker stack!)
 - /owner/repo/image.html renders it as HTML
 - added similar frontend for browsers
 - Added cache-control header/query-param support (parsing max-age and stale-while-revalidate from cache-control header, but also from query (?max-age=xxx&stale-while-revalidate=xxx)). Return age header in response and by default, allow infinite stale-while-revalidate, max-age being a week.
