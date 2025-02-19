@@ -2,7 +2,7 @@
  * This implementation implements an API and simple frontend based off https://github.com/ahmedkhaleel2004/gitdiagram/tree/main with a few notable changes
  *
  * - uses cloudflare workers with KV and a queue instead of a container-based server
- * - went from ±11500 lines of code to ±1200
+ * - went from ±11500 lines of code to ±1200 (9.5x less complexity, showcasing the power of the frameworkless cloudflare worker stack!)
  * - /owner/repo/image.html renders it as HTML
  * - added similar frontend for browsers
  *
