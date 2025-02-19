@@ -6,12 +6,13 @@ This implementation implements an API and simple frontend based off https://gith
 - /owner/repo/image.html renders it as HTML
 - added similar frontend for browsers
 - Added cache-control header/query-param support (parsing max-age and stale-while-revalidate from cache-control header, but also from query (?max-age=xxx&stale-while-revalidate=xxx)). Return age header in response and by default, allow infinite stale-while-revalidate, max-age being a week.
+- use cloudflare browser rendering to expose /owner/repo/image.svg as well as /owner/repo/image.png (do something similar to https://github.com/alfonsusac/mermaid-ssr). we can use and adapt quickog taking the capture from a specific div!
 
 Possible improvements:
 
 - add monetisation using https://sponsorflare.com
-- use cloudflare browser rendering to expose /owner/repo/image.svg as well as /owner/repo/image.png (do something similar to https://github.com/alfonsusac/mermaid-ssr) OR we can use and adapt quickog taking the capture from a specific div!
 - use https://uithub.com/openapi.html to retrieve the tree instead of the github api (to bypass the ratelimit)
+
  */
 export interface Env {
   // KV Namespace for storing diagrams
