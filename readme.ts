@@ -1,16 +1,18 @@
 /**
- * This implementation implements an API and simple frontend based off https://github.com/ahmedkhaleel2004/gitdiagram/tree/main with a few notable changes
- *
- * - uses cloudflare workers with KV and a queue instead of a container-based server
- * - went from ±11500 lines of code to ±1200 (9.5x less complexity, showcasing the power of the frameworkless cloudflare worker stack!)
- * - /owner/repo/image.html renders it as HTML
- * - added similar frontend for browsers
- *
- *
- * Possible improvements:
- * - use cloudflare browser rendering to expose /owner/repo/image.svg as well as /owner/repo/image.png (do something similar to https://github.com/alfonsusac/mermaid-ssr)
- * - use https://uithub.com/openapi.html to retrieve the tree instead of the github api (to bypass the ratelimit)
- * - add monetisation using https://sponsorflare.com
+This implementation implements an API and simple frontend based off https://github.com/ahmedkhaleel2004/gitdiagram/tree/main with a few notable changes
+
+- uses cloudflare workers with KV and a queue instead of a container-based server
+- went from ±11500 lines of code to ±1200 (9.5x less complexity, showcasing the power of the frameworkless cloudflare worker stack!)
+- /owner/repo/image.html renders it as HTML
+- added similar frontend for browsers
+
+
+Possible improvements:
+
+- add cache-control header/query-param support (max-age + stale-while-revalidate)
+- add monetisation using https://sponsorflare.com
+- use cloudflare browser rendering to expose /owner/repo/image.svg as well as /owner/repo/image.png (do something similar to https://github.com/alfonsusac/mermaid-ssr)
+- use https://uithub.com/openapi.html to retrieve the tree instead of the github api (to bypass the ratelimit)
  */
 export interface Env {
   // KV Namespace for storing diagrams
