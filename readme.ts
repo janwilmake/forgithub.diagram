@@ -48,15 +48,13 @@ export default {
     const url = new URL(request.url);
     const path = url.pathname;
 
-    // Validate path format: /owner/repo
-    const match = path.match(/^\/([^\/]+)\/([^\/]+)$/);
-    if (!match) {
+    const [_, owner, repo, page] = path.split("/");
+    if (!owner || !repo) {
       return new Response("Invalid path. Use format: /owner/repo", {
         status: 400,
       });
     }
 
-    const [_, owner, repo] = match;
     const cacheKey = `diagram:${owner}:${repo}`;
 
     try {
@@ -78,6 +76,13 @@ export default {
               headers: { "Content-Type": "application/json" },
             },
           );
+        }
+
+        if (page === "svg.svg" && cachedResult.diagram) {
+          const url = new URL("https://mermaid-ssr.vercel.app/render");
+          url.searchParams.set("code", cachedResult.diagram);
+          const response = await fetch(url);
+          return response;
         }
 
         // If diagram exists, return it with 200 OK
