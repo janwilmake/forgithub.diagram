@@ -10,6 +10,7 @@ This implementation implements an API and simple frontend based off https://gith
 
 Possible improvements:
 
+- add unauthenticated tier with ratelimit
 - add monetisation using https://sponsorflare.com
 - use https://uithub.com/openapi.html to retrieve the tree instead of the github api (to bypass the ratelimit)
 
