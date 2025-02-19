@@ -3,6 +3,7 @@
  *
  * - uses cloudflare workers with KV and a queue instead of a container-based server
  * - uses uithub to retrieve the tree instead of the github api (to bypass the ratelimit)
+ * - 2 files totaling 5000 tokens (from 15 files totaling 14000 tokens)
  */
 export interface Env {
   // KV Namespace for storing diagrams
