@@ -1,8 +1,8 @@
 /**
- * This implementation implements an API based off https://github.com/ahmedkhaleel2004/gitdiagram/tree/main with a few notable changes
+ * This implementation implements an API and simple frontend based off https://github.com/ahmedkhaleel2004/gitdiagram/tree/main with a few notable changes
  *
  * - uses cloudflare workers with KV and a queue instead of a container-based server
- * - went from 14000 tokens of backend to ±5000 tokens (and fewer files)
+ * - went from ±11500 lines of code to ±1200
  * - /owner/repo/image.html renders it as HTML
  * - added similar frontend for browsers
  *
