@@ -152,6 +152,14 @@ export default {
 
         // Calculate age for caching purposes
 
+        if (page === "image.png") {
+          const refreshPart = cacheParams.maxAge === 0 ? "&refresh=true" : "";
+
+          const png = await fetch(
+            `https://quickog.com/screenshot/${url.origin}/${owner}/${repo}/image.html?id=diagram${refreshPart}`,
+          );
+          return png;
+        }
         if (page === "image.mmd") {
           // If diagram exists, return it with 200 OK and cache headers
           return new Response(cachedResult.diagram, {

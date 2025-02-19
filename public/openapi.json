@@ -18,6 +18,107 @@
     }
   ],
   "paths": {
+    "/{owner}/{repo}/image.png": {
+      "get": {
+        "summary": "Generate a diagram png for a GitHub repository",
+        "description": "Generates a diagram png representing the architecture of a GitHub repository. If not available in cache, starts generation and returns a 202 status.",
+        "operationId": "generateDiagram",
+        "parameters": [
+          {
+            "name": "owner",
+            "in": "path",
+            "description": "GitHub repository owner",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "repo",
+            "in": "path",
+            "description": "GitHub repository name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "max-age",
+            "in": "query",
+            "description": "Maximum age (in seconds) the client is willing to accept a cached response",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 0,
+              "default": 604800
+            }
+          },
+          {
+            "name": "stale-while-revalidate",
+            "in": "query",
+            "description": "Maximum staleness (in seconds) the client is willing to accept while the response is being revalidated",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 0,
+              "default": 2147483647
+            }
+          },
+          {
+            "name": "Cache-Control",
+            "in": "header",
+            "description": "Cache control directives (can include max-age, stale-while-revalidate)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Diagram png",
+
+            "content": {
+              "image/png": {
+                "schema": { "type": "string" }
+              }
+            }
+          },
+          "202": {
+            "description": "Diagram generation in progress",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PendingResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/{owner}/{repo}/image.mmd": {
       "get": {
         "summary": "Generate a Mermaid diagram for a GitHub repository",
