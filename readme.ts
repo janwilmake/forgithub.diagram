@@ -5,13 +5,12 @@ This implementation implements an API and simple frontend based off https://gith
 - went from ±11500 lines of code to ±1200 (9.5x less complexity, showcasing the power of the frameworkless cloudflare worker stack!)
 - /owner/repo/image.html renders it as HTML
 - added similar frontend for browsers
-
+- Added cache-control header/query-param support (parsing max-age and stale-while-revalidate from cache-control header, but also from query (?max-age=xxx&stale-while-revalidate=xxx)). Return age header in response and by default, allow infinite stale-while-revalidate, max-age being a week.
 
 Possible improvements:
 
-- add cache-control header/query-param support (max-age + stale-while-revalidate)
 - add monetisation using https://sponsorflare.com
-- use cloudflare browser rendering to expose /owner/repo/image.svg as well as /owner/repo/image.png (do something similar to https://github.com/alfonsusac/mermaid-ssr)
+- use cloudflare browser rendering to expose /owner/repo/image.svg as well as /owner/repo/image.png (do something similar to https://github.com/alfonsusac/mermaid-ssr) OR we can use and adapt quickog taking the capture from a specific div!
 - use https://uithub.com/openapi.html to retrieve the tree instead of the github api (to bypass the ratelimit)
  */
 export interface Env {
@@ -42,6 +41,63 @@ export interface DiagramData {
   failed?: string;
 }
 
+/**
+ * Parse cache control parameters from the request and URL
+ * Handles both Cache-Control header and query parameters
+ */
+function parseCacheControl(
+  request: Request,
+  url: URL,
+): { maxAge: number; staleWhileRevalidate: number } {
+  // Default values (1 week max-age, infinite stale-while-revalidate)
+  let maxAge = 60 * 60 * 24 * 7; // 1 week in seconds
+  let staleWhileRevalidate = 2147483647; // Effectively infinite (maximum 32-bit signed integer)
+
+  // Parse from query parameters (takes precedence)
+  const queryMaxAge = url.searchParams.get("max-age");
+  const querySwr = url.searchParams.get("stale-while-revalidate");
+
+  if (queryMaxAge) {
+    const parsed = parseInt(queryMaxAge, 10);
+    if (!isNaN(parsed) && parsed >= 0) {
+      maxAge = parsed;
+    }
+  }
+
+  if (querySwr) {
+    const parsed = parseInt(querySwr, 10);
+    if (!isNaN(parsed) && parsed >= 0) {
+      staleWhileRevalidate = parsed;
+    }
+  }
+
+  // If no query params, check Cache-Control header
+  if (!queryMaxAge && !querySwr) {
+    const cacheControl = request.headers.get("Cache-Control");
+    if (cacheControl) {
+      // Extract max-age directive
+      const maxAgeMatch = cacheControl.match(/max-age=(\d+)/);
+      if (maxAgeMatch && maxAgeMatch[1]) {
+        const parsed = parseInt(maxAgeMatch[1], 10);
+        if (!isNaN(parsed) && parsed >= 0) {
+          maxAge = parsed;
+        }
+      }
+
+      // Extract stale-while-revalidate directive
+      const swrMatch = cacheControl.match(/stale-while-revalidate=(\d+)/);
+      if (swrMatch && swrMatch[1]) {
+        const parsed = parseInt(swrMatch[1], 10);
+        if (!isNaN(parsed) && parsed >= 0) {
+          staleWhileRevalidate = parsed;
+        }
+      }
+    }
+  }
+
+  return { maxAge, staleWhileRevalidate };
+}
+
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     // Only allow GET requests
@@ -59,6 +115,8 @@ export default {
       });
     }
 
+    // Parse cache control parameters
+    const cacheParams = parseCacheControl(request, url);
     const cacheKey = `diagram:${owner}:${repo}`;
 
     try {
@@ -86,17 +144,26 @@ export default {
           return new Response("Not found", { status: 404 });
         }
 
+        // Calculate age for caching purposes
+        const generatedDate = cachedResult.generated
+          ? new Date(cachedResult.generated).getTime()
+          : Date.now();
+        const age = Math.floor((Date.now() - generatedDate) / 1000);
+
         if (page === "image.mmd") {
-          // If diagram exists, return it with 200 OK
+          // If diagram exists, return it with 200 OK and cache headers
           return new Response(cachedResult.diagram, {
             status: 200,
-            headers: { "Content-Type": "text/plain" },
+            headers: {
+              "Content-Type": "text/plain",
+              "Cache-Control": `max-age=${cacheParams.maxAge}, stale-while-revalidate=${cacheParams.staleWhileRevalidate}`,
+              Age: age.toString(),
+            },
           });
         }
 
-        if (page === "image.html" || !page) {
-          return new Response(
-            `<!doctype html>
+        return new Response(
+          `<!doctype html>
 <html lang="en">
   <body>
     <pre class="mermaid">
@@ -107,13 +174,13 @@ ${cachedResult.diagram}
     </script>
   </body>
 </html>`,
-            { headers: { "content-type": "text/html" } },
-          );
-        }
-
-        return new Response(
-          "Page not allowed, try either 'image.html' or 'image.mmd'",
-          { status: 400 },
+          {
+            headers: {
+              "Content-Type": "text/html",
+              "Cache-Control": `max-age=${cacheParams.maxAge}, stale-while-revalidate=${cacheParams.staleWhileRevalidate}`,
+              Age: age.toString(),
+            },
+          },
         );
       }
 
